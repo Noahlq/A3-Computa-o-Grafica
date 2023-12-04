@@ -3,65 +3,19 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
-
-import java.io.File;
 import java.lang.Math;
 
-import java.awt.Image;
-import javax.imageio.ImageIO;
 /**
  *
  * @author Noah
  */
+
 public class Cena implements GLEventListener{    
     private float xMin, xMax, yMin, yMax, zMin, zMax;    
     GLU glu;
-    private float startCarXN;
-    private float startCarXP;
-    private float carX = 0; // Posição inicial do objeto
-    private float carY = 0; // Posição inicial do objeto
-    private float ballY = 0; // Posição inicial da bola branca
-    private float ballX = 0; // Posição inicial da bola branca
-    private float ballVelocity = 1; // Velocidade inicial da bola branca
-    private float ballAccelerationY = -0.05f; // Aceleração da gravidade
-    
+    Player player1 = Backend.getPlayer1();
+    Player player2 = Backend.getPlayer2();
 
-    public void updateBall() {
-        ballY += ballVelocity; // Atualiza a posição da bola adicionando a velocidade
-        ballVelocity += ballAccelerationY; // Atualiza a velocidade adicionando a aceleração
-
-        if (ballY <= -170 && ballX >= startCarXN && ballX <= startCarXP) {
-            System.out.println("Posição da bola:" + ballX +"\n"+ "Posição Negativa e Positiva do carro:" + startCarXN + "||" + startCarXP);
-            ballY = -170;
-            ballVelocity *= -0.8f; // Inverte a velocidade para simular uma colisão/elástico
-        }
-
-        // Restrição para evitar que a bola saia da tela no eixo Y
-        if (ballY < -225) {
-            ballY = -225;
-            ballVelocity *= -0.8f; // Inverte a velocidade para simular uma colisão/elástico
-        }
-    }
-//
-    public void moveObjectLeft() {
-        float halfWidth = 70; // Metade da largura do objeto (140 / 2)
-        carX -= 5; // Movendo o objeto para a esquerda
-        startCarXN = carX - halfWidth;
-        startCarXP = carX + halfWidth;
-        if (carX <= xMin + halfWidth) {
-            carX = xMin + halfWidth;
-        }
-    }
-    
-    public void moveObjectRight() {
-        float halfWidth = 70; // Metade da largura do objeto (140 / 2)
-        carX += 5; // Movendo o objeto para a direita
-        startCarXN = carX - halfWidth;
-        startCarXP = carX + halfWidth;
-        if (carX >= xMax - halfWidth) {
-            carX = xMax - halfWidth;
-        }
-    }
     @Override
     public void init(GLAutoDrawable drawable) {
         //dados iniciais da cena
@@ -71,9 +25,15 @@ public class Cena implements GLEventListener{
         xMax = yMax = zMax = 250;
         GL2 gl = drawable.getGL().getGL2();
     }
+    
+
 
     @Override
-    public void display(GLAutoDrawable drawable) {  
+    public void display(GLAutoDrawable drawable) { 
+        //Funcoes para lembrar:
+        //gl.glTranslatef(x, y, z);
+        //gl.glPushMatrix();
+        //gl.glPopMatrix();
         //obtem o contexto Opengl
         GL2 gl = drawable.getGL().getGL2();
 
@@ -82,23 +42,12 @@ public class Cena implements GLEventListener{
         //limpa a janela com a cor especificada
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);       
         gl.glLoadIdentity(); //lê a matriz identidade
-        
-        gl.glPushMatrix();//Incio
-        gl.glTranslatef(carX, -225, 0);
-        car(gl);
-        gl.glPopMatrix();//Fim
 
-        updateBall();
         gl.glPushMatrix();
-        gl.glTranslatef(-40, ballY, 0); // Posição vertical da bola branca
-        bolaBranca(gl);
+        gl.glTranslatef(player1.cordX, player1.cordY, 0);
+        player1(gl);
         gl.glPopMatrix();
-
-        inimigos(gl);
         
-        //gl.glColor3f(1,1,1); //cor branca        
-        gl.glColor3f(0,0,0);      
-        //desenha um retangulo
         
         gl.glFlush();      
     }
@@ -132,86 +81,67 @@ public class Cena implements GLEventListener{
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity(); //lê a matriz identidade
         System.out.println("Reshape: " + width + ", " + height);
-    }    
+    }
+
 
     @Override
     public void dispose(GLAutoDrawable drawable) {}
 
-    public static void car(GL2 gl){
-        parteCima(gl);
-        rodaEsquerda(gl);
-        rodaDireita(gl);
-        parteBaixo(gl);
-
-    }
-    
-    public static void parteBaixo(GL2 gl){
-        gl.glColor3f(1f,1f,0f);
-            gl.glBegin(GL2.GL_POLYGON);
-                //PARTE DE BAIXO
-                gl.glVertex2f(-70, 0);
-                gl.glVertex2f(70, 0);
-                gl.glVertex2f(70, 25);
-                gl.glVertex2f(-70, 25);
-            gl.glEnd();
-    }
-
-    public static void parteCima(GL2 gl){
-        gl.glColor3f(1f,1f,0f);
-            gl.glBegin(GL2.GL_POLYGON);
-                //PARTE DE CIMA
-                gl.glVertex2f(-45, 25);
-                gl.glVertex2f(45, 25);
-                gl.glVertex2f(45, 45);
-                gl.glVertex2f(-45, 45);
-            gl.glEnd();
-    }
-
-    public static void rodaEsquerda(GL2 gl){
-        gl.glColor3f(0f,0f,0f);
-            gl.glBegin(GL2.GL_POLYGON);
-                //RODA ESQUERDA
-                float the;
-                for(int i=0;i<360;i++){
-                    the = i*3.14F/180;
-                    gl.glVertex2f(-45+10*(float)Math.cos(the), 0+10*(float)Math.sin(the));
-                }
-            gl.glEnd();
-    }
-
-    public static void rodaDireita(GL2 gl){
-        gl.glColor3f(0f,0f,0f);
-            gl.glBegin(GL2.GL_POLYGON);
-                //RODA DIREITA
-                float thd;
-                for(int i=0;i<360;i++){
-                    thd = i*3.14F/180;
-                    gl.glVertex2f(45+10*(float)Math.cos(thd), 0+10*(float)Math.sin(thd));
-                }
-            gl.glEnd();
-    }
-
-    public static void bolaBranca(GL2 gl){
-        gl.glColor3f(1f,1f,0f);
-            gl.glBegin(GL2.GL_POLYGON);
-                //RODA DIREITA
-                float thd;
-                for(int i=0;i<360;i++){
-                    thd = i*3.14F/180;
-                    gl.glVertex2f(45+10*(float)Math.cos(thd), 0+10*(float)Math.sin(thd));
-                }
-            gl.glEnd();
-    }
-
-    public static void inimigos(GL2 gl){
+    public void player1(GL2 gl){
         gl.glColor3f(1, 0, 0);
         gl.glBegin(GL2.GL_POLYGON);
-            gl.glVertex2f(10, 20);
-            gl.glVertex2f(20, 20);
-            gl.glVertex2f(20, 10);
-            gl.glVertex2f(10, 10);
-        gl.glEnd();     
+            gl.glVertex2f(-70, -230);
+            gl.glVertex2f(70, -230);
+            gl.glVertex2f(70, -240);
+            gl.glVertex2f(-70, -240);
+        gl.glEnd();
+    }
 
-            
+    public static void joyStick1(GL2 gl){
+        gl.glColor3f(1, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(-35, -210); //1
+            gl.glVertex2f(0, -210); //2
+            gl.glVertex2f(0, -220); //3
+            gl.glVertex2f(-35, -220); //4
+        gl.glEnd();
+    }
+    public static void joyStick2(GL2 gl){
+        gl.glColor3f(1, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(35, -210); //1
+            gl.glVertex2f(0, -210); //2
+            gl.glVertex2f(0, -220); //3
+            gl.glVertex2f(35, -220); //4
+        gl.glEnd();                  
+    }
+
+    public static void bolaAmarela(GL2 gl){
+        gl.glColor3f(1f,1f,0f);
+            gl.glBegin(GL2.GL_POLYGON);
+                float thd;
+                for(int i=0;i<360;i++){
+                    thd = i*3.14F/180;
+                    gl.glVertex2f(45+10*(float)Math.cos(thd), 0+10*(float)Math.sin(thd));
+                }
+            gl.glEnd();
+    }
+
+    public static void bordaBaixo(GL2 gl){
+        gl.glColor3f(1, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(-250, -230); //1
+            gl.glVertex2f(-35, -230); //2
+            gl.glVertex2f(-35, -240); //3
+            gl.glVertex2f(-250, -240); //4
+        gl.glEnd();
+
+        gl.glColor3f(1, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(250, -230); //1
+            gl.glVertex2f(35, -230); //2
+            gl.glVertex2f(35, -240); //3
+            gl.glVertex2f(250, -240); //4
+        gl.glEnd();                  
     }
 }

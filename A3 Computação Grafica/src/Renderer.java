@@ -44,7 +44,7 @@ public class Renderer {
         window.setVisible(true);
     }
   
-    public static void main(String[] args) {
+    public static void start() {
     
         Cena cena = new Cena();
         KeyBoard keyboard = new KeyBoard(cena);

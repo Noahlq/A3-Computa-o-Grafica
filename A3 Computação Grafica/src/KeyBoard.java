@@ -27,14 +27,33 @@ public class KeyBoard implements KeyListener{
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             System.exit(0);
 
-        if (e.getKeyChar() == 'a') {
-            cena.moveObjectLeft();
+        if (e.getKeyChar() == 'a') {//Player1
+
+           Backend.movePlayer1Left();
+
             if (drawable != null) { // Verificar se drawable foi configurado corretamente
                 drawable.display(); // Redesenha a cena para refletir o movimento do objeto
             }
+            
         } else if (e.getKeyChar() == 'd') {
-            cena.moveObjectRight();
+
+            Backend.movePlayer1Right();
+
             if (drawable != null) { // Verificar se drawable foi configurado corretamente
+                drawable.display(); // Redesenha a cena para refletir o movimento do objeto
+            }
+        }else if (e.getKeyChar() == KeyEvent.VK_LEFT){ //Player2
+
+            Backend.movePlayer2Left();
+
+            if (drawable!= null) { // Verificar se drawable foi configurado corretamente
+                drawable.display(); // Redesenha a cena para refletir o movimento do objeto
+            }
+        }else if(e.getKeyChar() == KeyEvent.VK_RIGHT){
+
+            Backend.movePlayer2Right();
+            
+            if (drawable!= null) { // Verificar se drawable foi configurado corretamente
                 drawable.display(); // Redesenha a cena para refletir o movimento do objeto
             }
         }
