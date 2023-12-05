@@ -27,7 +27,7 @@ public class Player implements Movement{
 
     }
 
-    public int Currency(int currency) {
+    public int Currency() {
 
         this.currency += currency;
         
@@ -38,9 +38,12 @@ public class Player implements Movement{
     @Override
     public Boolean moveLeft(){
         try{
-            this.cordX -= velocity;
-            this.cordXLeft -= velocity;
-            this.cordXRight += (velocity * -1);
+            
+            if (cordXLeft != -250) {
+                this.cordX -= velocity;
+                this.cordXLeft -= velocity;
+                this.cordXRight += (velocity * -1);
+            } else {}
             return true;
         } catch (Exception e){
             System.out.println(e.getMessage());
@@ -51,9 +54,11 @@ public class Player implements Movement{
     @Override
     public Boolean moveRight(){
         try{
-            this.cordX += velocity;
-            this.cordXRight += velocity;
-            this.cordXLeft -= (velocity * -1);
+            if (cordXRight != 250) {
+                this.cordX += velocity;
+                this.cordXRight += velocity;
+                this.cordXLeft -= (velocity * -1);
+            } else {}
             return true;
         } catch (Exception e){
             System.out.println(e.getMessage());

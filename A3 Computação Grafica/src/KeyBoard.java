@@ -9,6 +9,7 @@ import com.jogamp.opengl.GLAutoDrawable;
 public class KeyBoard implements KeyListener{
     private Cena cena;
     private GLAutoDrawable drawable;
+    Ball ball = Backend.getBall();
     
     public KeyBoard(Cena cena){
         this.cena = cena; 
@@ -27,7 +28,7 @@ public class KeyBoard implements KeyListener{
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             System.exit(0);
 
-        if (e.getKeyChar() == 'a') {//Player1
+        if (e.getKeyChar() == 'a' || e.getKeyChar() == 'A') {//Player1
 
            Backend.movePlayer1Left();
 
@@ -35,26 +36,30 @@ public class KeyBoard implements KeyListener{
                 drawable.display(); // Redesenha a cena para refletir o movimento do objeto
             }
             
-        } else if (e.getKeyChar() == 'd') {
+        } else if (e.getKeyChar() == 'd' || e.getKeyChar() == 'D') {
 
             Backend.movePlayer1Right();
 
             if (drawable != null) { // Verificar se drawable foi configurado corretamente
                 drawable.display(); // Redesenha a cena para refletir o movimento do objeto
             }
-        }else if (e.getKeyChar() == KeyEvent.VK_LEFT){ //Player2
+        }else if (e.getKeyCode() == KeyEvent.VK_LEFT){ //Player2
 
             Backend.movePlayer2Left();
 
             if (drawable!= null) { // Verificar se drawable foi configurado corretamente
                 drawable.display(); // Redesenha a cena para refletir o movimento do objeto
             }
-        }else if(e.getKeyChar() == KeyEvent.VK_RIGHT){
+        }else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 
             Backend.movePlayer2Right();
             
             if (drawable!= null) { // Verificar se drawable foi configurado corretamente
                 drawable.display(); // Redesenha a cena para refletir o movimento do objeto
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (ball.isStart == true) {
+                ball.isntStart();
             }
         }
     }

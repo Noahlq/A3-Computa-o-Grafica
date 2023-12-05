@@ -10,6 +10,7 @@ public class Shop{
         int fire = 10;
 
         Scanner scanner = new Scanner(System.in);
+        Player p1 = Backend.getPlayer1();
 
         System.out.println("Welcome to the Shop!");
         System.out.println("--------------------------------'");
@@ -22,7 +23,7 @@ public class Shop{
         switch (scanner.next()) {
             case "1":
 
-                if (Player.Currency() >= speed){
+                if (p1.getCurrency() >= speed){
 
 
                 }

@@ -15,6 +15,7 @@ public class Cena implements GLEventListener{
     GLU glu;
     Player player1 = Backend.getPlayer1();
     Player player2 = Backend.getPlayer2();
+    Ball ball = Backend.getBall();
 
     @Override
     public void init(GLAutoDrawable drawable) {
@@ -38,16 +39,41 @@ public class Cena implements GLEventListener{
         GL2 gl = drawable.getGL().getGL2();
 
         //define a cor da janela (R, G, G, alpha)
-        gl.glClearColor(1, 1, 1, 0.3F);        
+        gl.glClearColor(0, 1, 0, 0.3F);        
         //limpa a janela com a cor especificada
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);       
         gl.glLoadIdentity(); //lê a matriz identidade
+
+        wallsHor(gl);
+        wallsVert(gl);
 
         gl.glPushMatrix();
         gl.glTranslatef(player1.cordX, player1.cordY, 0);
         player1(gl);
         gl.glPopMatrix();
-        
+
+        gl.glPushMatrix();
+        gl.glTranslatef(player2.cordX, player2.cordY, 0);
+        player2(gl);
+        gl.glPopMatrix();
+
+        if(ball.isStart == true){
+            gl.glPushMatrix();
+            gl.glTranslatef(0, -220, 0);
+            drawCircle(gl, 10, 30);
+            gl.glPopMatrix();
+        } else {
+            Backend.checkCollisionPlayer();
+            Backend.checkCollisionWallRight();
+            Backend.checkCollisionWallLeft();
+            Backend.checkCollisionWallUp();
+            Backend.checkCollisionWallDown();
+            gl.glPushMatrix();
+            ball.startBall();
+            gl.glTranslatef(ball.cordX, ball.cordY, 0);
+            drawCircle(gl, 10, 30);
+            gl.glPopMatrix();
+        }
         
         gl.glFlush();      
     }
@@ -90,10 +116,19 @@ public class Cena implements GLEventListener{
     public void player1(GL2 gl){
         gl.glColor3f(1, 0, 0);
         gl.glBegin(GL2.GL_POLYGON);
-            gl.glVertex2f(-70, -230);
-            gl.glVertex2f(70, -230);
-            gl.glVertex2f(70, -240);
-            gl.glVertex2f(-70, -240);
+            gl.glVertex2f(-30, -230);
+            gl.glVertex2f(30, -230);
+            gl.glVertex2f(30, -240);
+            gl.glVertex2f(-30, -240);
+        gl.glEnd();
+    }
+    public void player2(GL2 gl){
+        gl.glColor3f(1, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(-30, 230);
+            gl.glVertex2f(30, 230);
+            gl.glVertex2f(30, 240);
+            gl.glVertex2f(-30, 240);
         gl.glEnd();
     }
 
@@ -127,6 +162,18 @@ public class Cena implements GLEventListener{
             gl.glEnd();
     }
 
+    public static void drawCircle(GL2 gl, float radius, int numSegments) {
+        gl.glColor3f(0f, 0f, 0f);
+        gl.glBegin(GL2.GL_POLYGON);
+        for (int i = 0; i < numSegments; i++) {
+            double theta = 2.0 * Math.PI * i / numSegments;
+            float x = radius * (float)Math.cos(theta);
+            float y = radius * (float)Math.sin(theta);
+            gl.glVertex2f(x, y);
+        }
+        gl.glEnd();
+    }
+
     public static void bordaBaixo(GL2 gl){
         gl.glColor3f(1, 0, 0);
         gl.glBegin(GL2.GL_POLYGON);
@@ -143,5 +190,57 @@ public class Cena implements GLEventListener{
             gl.glVertex2f(35, -240); //3
             gl.glVertex2f(250, -240); //4
         gl.glEnd();                  
+    }
+
+    public static void wallsHor(GL2 gl){
+        gl.glColor3f(0, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(-260, -250); //1
+            gl.glVertex2f(-260, 250); //2
+            gl.glVertex2f(-250, 250); //3
+            gl.glVertex2f(-250, -250); //4
+        gl.glEnd();
+
+        gl.glColor3f(0, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(250, -250); //1
+            gl.glVertex2f(250, 250); //2
+            gl.glVertex2f(260, 250); //3
+            gl.glVertex2f(260, -250); //4
+        gl.glEnd();
+    }
+
+    public static void wallsVert(GL2 gl) {//
+        gl.glColor3f(0, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(-250, 240); //1
+            gl.glVertex2f(-70, 240); //2
+            gl.glVertex2f(-70, 250); //3
+            gl.glVertex2f(-250, 250); //4
+        gl.glEnd();
+
+        gl.glColor3f(0, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(250, 240); //1
+            gl.glVertex2f(70, 240); //2
+            gl.glVertex2f(70, 250); //3
+            gl.glVertex2f(250, 250); //4
+        gl.glEnd();
+
+        gl.glColor3f(0, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(-250, -250); //1
+            gl.glVertex2f(-70, -250); //2
+            gl.glVertex2f(-70, -240); //3
+            gl.glVertex2f(-250, -240); //4
+        gl.glEnd();
+
+        gl.glColor3f(0, 0, 0);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(250, -250); //1
+            gl.glVertex2f(70, -250); //2
+            gl.glVertex2f(70, -240); //3
+            gl.glVertex2f(250, -240); //4
+        gl.glEnd();
     }
 }

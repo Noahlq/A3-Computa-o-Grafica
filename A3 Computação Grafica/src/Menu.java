@@ -4,22 +4,26 @@ import java.util.Scanner;
 public class Menu{
 //
     public static void main(String[] args){
-
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Menu");
 
-        System.out.println("P - Play");
-   
+        System.out.println("S - SinglePlayer");
+        System.out.println("M - Multiplayer");
         System.out.println("O - Options");
         System.out.println("C - Controls");
         System.out.println("E - Exit");
 
-        Scanner scanner = new Scanner(System.in);
+        String option = scanner.nextLine();
+        switch (option.toUpperCase()) {
+            case "S": //singleplay
 
-        switch (scanner.next()) {
-            case "P": //play
+            
+                break;
+
+            case "M": //multi
 
                 Renderer.start();
-                
+
                 break;
 
             case "O": //options
@@ -49,6 +53,7 @@ public class Menu{
                 break;
         
             default:
+                System.out.println("Invalid Input");
                 break;
         }
 

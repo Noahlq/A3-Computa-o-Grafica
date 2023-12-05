@@ -1,3 +1,5 @@
 public interface BallInterface {
-    Boolean moveBall();
+    Boolean startBall();
+    Boolean changeVectorY();
+    Boolean changeVectorX();
 }
